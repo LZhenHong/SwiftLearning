@@ -91,3 +91,168 @@ pairs.reserveCapacity(20)
 namesAndScores = ["Anna": 2, "Brian": 2, "Craig": 8, "Donna": 6]
 print(namesAndScores["Anna"] as Any)
 print(namesAndScores["Greg"] as Any)
+
+// A dictionary needs to loop through all of the values to compute the count.
+namesAndScores.isEmpty
+namesAndScores.count
+
+var bobData = [
+    "name": "Bob",
+    "profession": "Card Player",
+    "country": "USA"
+]
+bobData.updateValue("CA", forKey: "state")
+bobData["city"] = "San Francisco"
+func printPlayerCityAndState(playerData: [String: String]) {
+    guard let city = playerData["city"], let state = playerData["state"] else {
+        print("Player has no city or state.")
+        return
+    }
+    print("Player comes from \(city), \(state)")
+}
+printPlayerCityAndState(playerData: bobData)
+
+bobData.updateValue("Bobby", forKey: "name")
+bobData["profession"] = "Mailman"
+
+bobData.removeValue(forKey: "state")
+bobData["city"] = nil
+
+
+for (player, score) in namesAndScores {
+    print("\(player) - \(score)")
+}
+
+for player in namesAndScores.keys {
+    print("\(player), ", terminator: "")
+}
+print("")
+
+for score in namesAndScores.values {
+    print("\(score), ", terminator: "")
+}
+print("")
+
+// Hash key
+
+let setOne: Set<Int> = [1]
+var explicitSet: Set<Int> = [1, 2, 3, 1]
+var someSet = Set([1, 2, 3, 1])
+
+print(someSet.contains(1))
+print(someSet.contains(4))
+
+someSet.insert(5)
+let removeElment = someSet.remove(1)
+print(removeElment as Any)
+
+
+// ----- Challenges -----
+let array1 = [Int]()
+// let array2 = [] // Error happens
+let array3: [String] = []
+
+let array4 = [1, 2, 3]
+print(array4[0])
+array4[1...2]
+
+var array5 = [1, 2, 3]
+array5[0] = array5[1]
+array5[0...1] = [4, 5]
+for item in array5 {
+    print("Array: \(item)")
+}
+
+func removingOnce(_ item: Int, from array: [Int]) -> [Int] {
+    var resArray = array
+    if let itemIndex = array.firstIndex(of: item) {
+        resArray.remove(at: itemIndex)
+    }
+    return resArray
+}
+
+func removing(_ item: Int, from array: [Int]) -> [Int] {
+    var indexs: [Int] = []
+    for (index, arrayItem) in array.enumerated() {
+        if arrayItem == item {
+            indexs.append(index)
+        }
+    }
+    guard !indexs.isEmpty else {
+        return array
+    }
+    var resArray = Array(array[0...array.count - 1])
+    for index in indexs.reversed() {
+        resArray.remove(at: index)
+    }
+    return resArray
+}
+
+func reversed(_ array: [Int]) -> [Int] {
+    var resArray: [Int] = []
+    for item in array {
+        resArray.insert(item, at: 0)
+    }
+    return resArray
+}
+
+func middle(_ array: [Int]) -> Int? {
+    guard !array.isEmpty else {
+        return nil
+    }
+    
+    return array[array.count / 2]
+}
+
+func minMax(of numbers: [Int]) -> (min: Int, max: Int)? {
+    guard !numbers.isEmpty else {
+        return nil
+    }
+    
+    let tmpNumbers = numbers.sorted()
+    return (tmpNumbers.first!, tmpNumbers.last!)
+}
+
+var dict5 = ["NY": "New York", "CA": "California"]
+dict5["NY"]
+dict5["WA"] = "Washington"
+dict5["CA"] = nil
+
+func printValueMoreThan8(locationMap: [String: String]) {
+    for (_, location) in locationMap where location.count > 8 {
+        print(location)
+    }
+}
+printValueMoreThan8(locationMap: dict5)
+
+func merging(_ dict1: [String: String], with dict2: [String: String]) -> [String: String] {
+    var resDict = dict1
+    for (key, val) in dict2 {
+        resDict[key] = val
+    }
+    return resDict
+}
+
+func occurrencesOfCharacters(in text: String) -> [Character: Int] {
+    guard !text.isEmpty else {
+        return [:]
+    }
+    var resDict: [Character: Int] = [:]
+    for char in text {
+        let count = resDict[char, default: 0]
+        resDict[char] = count + 1
+    }
+    return resDict
+}
+
+func isInvertible(_ dictionary: [String: Int]) -> Bool {
+    var containerSet: Set<Int> = []
+    for (_, val) in dictionary {
+        containerSet.insert(val)
+    }
+    return containerSet.count == dictionary.values.count
+}
+
+var nameTitleLookup: [String: String?] = ["Mary": "Engineer", "Patrick": "Intern", "Ray": "Hacker"]
+nameTitleLookup.updateValue(nil, forKey: "Patrick")
+nameTitleLookup["Ray"] = nil

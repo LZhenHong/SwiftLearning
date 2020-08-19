@@ -14,13 +14,24 @@ class Person {
         self.firstName = firstName
         self.lastName = lastName
     }
+    
+    deinit {
+        print("\(firstName) \(lastName) is being removed from memory!")
+    }
 }
 
 class Student: Person {
     var grades: [Grade] = []
+    weak var partner: Student?
+    
+    static var graduates: [String] = []
     
     func recordGrade(_ grade: Grade) {
         grades.append(grade)
+    }
+    
+    deinit {
+        Student.graduates.append("\(firstName) \(lastName)")
     }
 }
 
@@ -106,10 +117,34 @@ class AnotherStudent: Person {
     final func recordGrade(_ grade: Grade) {}
 }
 
-class NewStudent: Student {}
+class NewStudent {
+    let firstName: String
+    let lastName: String
+    var grades: [Grade] = []
+    
+    // This keyword will force all subclasses of NewStudent to implement this initializer.
+    required init(firstName: String, lastName: String) {
+        self.firstName = firstName
+        self.lastName = lastName
+    }
+    
+    // The compiler forces a convenience initializer to call a non-convenience initializer (directly or indirectly)
+    convenience init(transfer: NewStudent) {
+        self.init(firstName: transfer.firstName, lastName: transfer.lastName)
+    }
+    
+    func recordGrade(_ grade: Grade) {
+        grades.append(grade)
+    }
+}
 
 class NewStudentAthlete: NewStudent {
     var sports: [String]
+    
+    required init(firstName: String, lastName: String) {
+        self.sports = []
+        super.init(firstName: firstName, lastName: lastName)
+    }
     
     // Initializers in subclasses are required to call super.init
     init(firstName: String, lastName: String, sports: [String]) {
@@ -119,4 +154,99 @@ class NewStudentAthlete: NewStudent {
         let passGrade = Grade(letter: "P", points: 0.0, credits: 0.0)
         recordGrade(passGrade)
     }
+}
+
+class Team {
+    var players: [StudentAthlete] = []
+    
+    var isEligible: Bool {
+        for player in players {
+            if !player.isEligible {
+                return false
+            }
+        }
+        return true
+    }
+}
+
+class Button {
+    func press() {}
+}
+
+class Image {}
+
+class ImageButton: Button {
+    var image: Image
+    
+    init(image: Image) {
+        self.image = image
+    }
+}
+
+class TextButton: Button {
+    var text: String
+    
+    init(text: String) {
+        self.text = text
+    }
+}
+
+// 引用计数
+// automatic reference counting or ARC
+// While some older languages require you to increment and decrement reference counts in your code, the Swift compiler adds these calls automatically at compile time.
+
+// Weak references must be declared as optional types so that when the object that they are referencing is released, it automatically becomes nil.
+
+class A {
+    required init() {
+        print("I'm <A>!")
+    }
+    
+    deinit {
+        print("Deinit A!")
+    }
+}
+
+class B: A {
+    required init() {
+        print("I'm <B>!")
+        super.init()
+        print("I'm <B> later!")
+    }
+    
+    deinit {
+        print("Deinit B!")
+    }
+}
+
+class C: B {
+    required init() {
+        print("I'm <C>!")
+        super.init()
+        print("I'm <C> later!")
+    }
+    
+    deinit {
+        print("Deinit C!")
+    }
+}
+
+var c: C? = C()
+c = nil
+
+let anotherC = C()
+let castA = anotherC as A
+
+let a = A()
+let castC = a as? C
+
+struct Location {
+    let x: Int
+    let y: Int
+}
+
+class StudentBaseballPlayer: StudentAthlete {
+    var position: Location = Location(x: 0, y: 0)
+    var number: Int = 0
+    var battingAverage: Double = 0.0
 }

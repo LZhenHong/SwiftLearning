@@ -91,3 +91,36 @@ class BankingTests: XCTestCase {
     }
 }
 BankingTests.defaultTestSuite.run()
+
+final fileprivate class Logger {
+    static let sharedLogger = Logger()
+    
+    private init() {}
+    
+    func log(_ logMsg: String) {
+        print(logMsg)
+    }
+}
+
+struct Stack<T> {
+    private var innerArray: [T] = []
+    
+    var count: Int {
+        innerArray.count
+    }
+    
+    mutating func push(_ element: T) {
+        innerArray.append(element)
+    }
+    
+    mutating func pop() -> T? {
+        guard !innerArray.isEmpty else {
+            return nil
+        }
+        return innerArray.removeLast()
+    }
+    
+    func peek() -> T? {
+        innerArray.last
+    }
+}

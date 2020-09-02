@@ -1,4 +1,5 @@
 import UIKit
+import CoreGraphics
 
 // unary binary ternary
 // 一元运算符: postfix prefix
@@ -213,3 +214,47 @@ let center = Point(x: 1, y: 2)
 let circle = Circle(center: center, radius: 1)
 circle.x
 circle.y
+
+// ----- Challenges -----
+extension Array {
+    subscript(index index: Int) -> (String, String)? {
+        guard let value = self[index] as? Int else {
+            return nil
+        }
+    
+        switch (value >= 0, abs(value) % 2) {
+        case (true, 0):
+            return ("positive", "even")
+        case (true, 1):
+            return ("positive", "odd")
+        case (false, 0):
+            return ("negative", "even")
+        case (false, 1):
+            return ("negative", "odd")
+        default:
+            return nil
+        }
+    }
+}
+
+extension String {
+    subscript(index: Int) -> Character? {
+        guard index < self.count else {
+            return nil
+        }
+        return self[self.index(startIndex, offsetBy: index)]
+    }
+}
+
+func **<F: FloatingPoint>(base: F, power: Int) -> F {
+    precondition(power >= 2)
+    var result = base
+    for _ in 2...power {
+        result *= base
+    }
+    return result
+}
+
+func **=<F: FloatingPoint>(lhs: inout F, rhs: Int) -> F {
+    lhs = lhs ** rhs
+}

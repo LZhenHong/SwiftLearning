@@ -3,6 +3,7 @@ import Cocoa
 enum Token {
     case number(Int)
     case plus
+    case minus
 }
 
 extension Token: CustomStringConvertible {
@@ -12,13 +13,15 @@ extension Token: CustomStringConvertible {
             return "Number: \(n)"
         case .plus:
             return "Symbol: +"
+        case .minus:
+            return "Symbol: -"
         }
     }
 }
 
 class Lexer {
     enum Error: Swift.Error {
-        case invalidCharacter(Character)
+        case invalidCharacter(Character, Int)
     }
     
     let input: String
@@ -66,10 +69,14 @@ class Lexer {
             case "+":
                 tokens.append(.plus)
                 advance()
+            case "-":
+                tokens.append(.minus)
+                advance()
             case " ":
                 advance()
             default:
-                throw Lexer.Error.invalidCharacter(nextCharacter)
+                let distance = input.distance(from: input.startIndex, to: position)
+                throw Lexer.Error.invalidCharacter(nextCharacter, distance)
             }
         }
         return tokens
@@ -107,7 +114,7 @@ class Parser {
         switch token {
         case .number(let value):
             return value
-        case .plus:
+        case .plus, .minus:
             throw Parser.Error.invalidToken(token)
         }
     }
@@ -119,6 +126,9 @@ class Parser {
             case .plus:
                 let nextNumber = try getNumber()
                 value += nextNumber
+            case .minus:
+                let nextNumber = try getNumber()
+                value -= nextNumber
             case .number:
                 throw Parser.Error.invalidToken(token)
             }
@@ -133,11 +143,20 @@ func evaluate(_ input: String) {
     do {
         let tokens = try lexer.lex()
         print("Lexer output: \(tokens)")
-    } catch Lexer.Error.invalidCharacter(let character) {
-        print("Input contained an invalid character: \(character)")
+        
+        let parser = Parser(tokens: tokens)
+        let result = try parser.parse()
+        print("Parser result: \(result)")
+    } catch Lexer.Error.invalidCharacter(let character, let position) {
+        print("Input contained an invalid character at index \(position): \(character)")
+    } catch Parser.Error.unexpectedEndOfInput {
+        print("Unexpected end of input during parsing")
+    } catch Parser.Error.invalidToken(let token) {
+        print("Invalid token during parsing: \(token)")
     } catch {
         print("An error occurred: \(error)")
     }
 }
 
-evaluate("10 + 3 + 5")
+evaluate("10 + 5 - 3 - 1")
+evaluate("1 + 3 + 7a + 8")

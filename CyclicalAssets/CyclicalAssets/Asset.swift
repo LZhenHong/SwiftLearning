@@ -9,12 +9,20 @@ import Foundation
 
 class Asset {
     let name: String
-    let value: Double
-    var container: Vault?
+    var value: Double {
+        didSet {
+            changeHandler(value - oldValue)
+        }
+    }
+    weak var container: Vault?
     
-    init(name: String, value: Double) {
+    typealias ValueChangeHandler = (Double) -> Void
+    var changeHandler: ValueChangeHandler
+    
+    init(name: String, value: Double, changeHandler: @escaping ValueChangeHandler = { _ in }) {
         self.name = name
         self.value = value
+        self.changeHandler = changeHandler
     }
     
     deinit {

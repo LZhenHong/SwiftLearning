@@ -102,8 +102,7 @@ printResult(subtract, 4, 2)
 
 // It’s useful because by the compiler knowing that the function won’t ever return, it can make certain optimizations when generating the code to call the function.
 func infiniteLoop() -> Never {
-    while true {
-    }
+    while true { }
 }
 
 /// Calculates the average of three values

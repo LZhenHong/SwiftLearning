@@ -118,7 +118,6 @@ bobData["profession"] = "Mailman"
 bobData.removeValue(forKey: "state")
 bobData["city"] = nil
 
-
 for (player, score) in namesAndScores {
     print("\(player) - \(score)")
 }

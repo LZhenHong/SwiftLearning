@@ -39,8 +39,8 @@ var structPerson2 = structPerson1
 
 // 堆 VS 栈
 // heap VS stack
+// The system uses the heap to store instances of reference types. The heap is generally a large pool of memory from which the system can request and dynamically allocate blocks of memory.
 // The system uses the stack to store anything on the immediate thread of execution; it’s tightly managed and optimized by the CPU.
-// The system uses the heap to store instances of reference types. The heap is generally a large pool of memory from which the system can request and dynamically allocate blocks of memory.
 var homeOwner = john
 john.firstName = "John"
 john.firstName

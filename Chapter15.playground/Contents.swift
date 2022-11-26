@@ -100,6 +100,7 @@ let coin = Coin.quarter
 coin.rawValue
 
 // Associated values aren’t properties you can access freely.
+// An enumeration can have raw values or associated values, but not both.
 enum WithdrawalResult {
     case success(newBalance: Int)
     case error(message: String)

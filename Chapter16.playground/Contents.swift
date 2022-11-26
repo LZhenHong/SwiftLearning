@@ -190,8 +190,8 @@ extension AnotherBike: Vehicle {
     }
 }
 
-protocol Named {
-// protocol Named: class {
+//protocol Named {
+protocol Named: AnyObject {
     var name: String { get set }
 }
 
@@ -203,9 +203,9 @@ class ClassyName: Named {
     }
 }
 
-struct StructyName: Named {
-    var name: String
-}
+//struct StructyName: Named {
+//    var name: String
+//}
 
 var named: Named = ClassyName(name: "Classy")
 var copy = named
@@ -214,12 +214,12 @@ named.name = "Still Classy"
 named.name
 copy.name
 
-named = StructyName(name: "Structy")
-copy = named
-
-named.name = "Still Structy?"
-named.name
-copy.name
+//named = StructyName(name: "Structy")
+//copy = named
+//
+//named.name = "Still Structy?"
+//named.name
+//copy.name
 
 class Record {
     var wins: Int
@@ -286,6 +286,12 @@ extension Student: Hashable {
         hasher.combine(email)
         hasher.combine(firstName)
         hasher.combine(lastName)
+    }
+}
+
+extension Student: Identifiable {
+    var id: String {
+        email
     }
 }
 

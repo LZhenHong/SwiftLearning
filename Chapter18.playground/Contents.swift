@@ -60,6 +60,7 @@ doctor.firstName
 doctor.lastName
 doctor.fullName
 
+// opaque return type
 func createAccount() -> some Account {
     CheckingAccount()
 }
@@ -82,6 +83,12 @@ class BankingTests: XCTestCase {
     func testCheckOverBudgetFails() {
         let check = checkingAccount.writeCheck(amount: 100)
         XCTAssertNil(check)
+    }
+    
+    func testNewAPI() throws {
+        guard #available(iOS 14, *) else {
+            throw XCTSkip("Only available in iOS 14 and above")
+        }
     }
     
     // Similarly to how setUp is executed before each test, tearDown runs after every test regardless of whether the test passes or fails.

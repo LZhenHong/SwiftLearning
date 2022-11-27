@@ -6,9 +6,9 @@ enum GameCharacterType {
     case wizard
 }
 
-protocol GameCharacter: class {
+protocol GameCharacter: AnyObject {
     var name: String { get }
-    var hitPoints: Int { get }
+    var hitPoints: Int { get set }
     var attackPoints: Int { get }
 }
 

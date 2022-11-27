@@ -1,10 +1,9 @@
 import UIKit
 import CoreGraphics
 
-// unary binary ternary
-// 一元运算符: postfix prefix
-// 二元运算符: infix
-// 三元运算符
+// 一元(unary)运算符: postfix prefix
+// 二元(binary)运算符: infix
+// 三元(ternary)运算符
 
 precedencegroup ExponentiationPrecedence {
     associativity: right
@@ -255,6 +254,6 @@ func **<F: FloatingPoint>(base: F, power: Int) -> F {
     return result
 }
 
-func **=<F: FloatingPoint>(lhs: inout F, rhs: Int) -> F {
+func **=<F: FloatingPoint>(lhs: inout F, rhs: Int) {
     lhs = lhs ** rhs
 }

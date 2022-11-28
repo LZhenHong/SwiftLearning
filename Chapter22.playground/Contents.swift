@@ -59,15 +59,54 @@ class Pet {
 
 class Person {
     let pet: Pet?
+    var name: String
+    var age: Int
     
-    init(pet: Pet? = nil) {
+    init(name: String, age: Int, pet: Pet? = nil) {
+        self.name = name
+        self.age = age
         self.pet = pet
     }
 }
 
-let janie = Person(pet: Pet(name: "Delia", kind: .dog, favoriteToy: Toy(kind: .ball, color: "Purple", sound: .bell)))
-let tammy = Person(pet: Pet(name: "Evil Cat Overlord", kind: .cat, favoriteToy: Toy(kind: .mouse, color: "Orange")))
-let felipe = Person()
+enum PersonError: Error {
+    case noName, noAge, noData
+}
+
+extension Person {
+    var data: String {
+        get throws {
+            guard !name.isEmpty else {
+                throw PersonError.noName
+            }
+            
+            guard age > 0 else {
+                throw PersonError.noAge
+            }
+            
+            return "\(name) is \(age) years old."
+        }
+    }
+}
+
+extension Person {
+    subscript(key: String) -> String {
+        get throws {
+            switch key {
+            case "name":
+                return name
+            case "age":
+                return "\(age)"
+            default:
+                throw PersonError.noData
+            }
+        }
+    }
+}
+
+let janie = Person(name: "janie", age: 15, pet: Pet(name: "Delia", kind: .dog, favoriteToy: Toy(kind: .ball, color: "Purple", sound: .bell)))
+let tammy = Person(name: "tammy", age: 20, pet: Pet(name: "Evil Cat Overlord", kind: .cat, favoriteToy: Toy(kind: .mouse, color: "Orange")))
+let felipe = Person(name: "felipe", age: 22)
 let team = [janie, tammy, felipe]
 team.compactMap { $0.pet?.name }
 
@@ -132,3 +171,83 @@ do {
 
 let open = try? bakery.open(false)
 let remaining = try? bakery.orderPastry(item: "Albatross", amountRequested: 1, flavor: "AlbatrossFlavor")
+
+enum Direction {
+    case left, right, forward
+}
+
+enum PugBotError: Error {
+    case invalidMode(found: Direction, expected: Direction)
+    case endOfPath
+}
+
+class PugBot {
+    let name: String
+    let correctPath: [Direction]
+    private var currentStepInPath = 0
+    
+    init(name: String, correctPath: [Direction]) {
+        self.name = name
+        self.correctPath = correctPath
+    }
+    
+    func move(_ direction: Direction) throws {
+        guard currentStepInPath < correctPath.count else {
+            throw PugBotError.endOfPath
+        }
+        
+        let nextDirection = correctPath[currentStepInPath]
+        guard nextDirection == direction else {
+            throw PugBotError.invalidMode(found: direction, expected: nextDirection)
+        }
+        currentStepInPath += 1
+    }
+    
+    func reset() {
+        currentStepInPath = 0
+    }
+}
+
+let pug = PugBot(name: "Pug", correctPath: [.forward, .left, .forward, .right])
+func goHome() throws {
+    try pug.move(.forward)
+    try pug.move(.left)
+    try pug.move(.forward)
+    try pug.move(.right)
+}
+
+func moveSafely(_ movement: () throws -> ()) -> String {
+    do {
+        try movement()
+        return "Completed operation successfully."
+    } catch PugBotError.invalidMode(let found, let expected) {
+        return "The PugBot was supposed to move \(expected), but moved \(found) instead."
+    } catch PugBotError.endOfPath {
+        return "The PugBot tried to move past the end of the path."
+    } catch {
+        return "An unknown error occurred."
+    }
+}
+
+do {
+    try goHome()
+} catch {
+    print("PugBot failed to get home.")
+}
+
+pug.reset()
+moveSafely(goHome)
+
+pug.reset()
+moveSafely {
+    try pug.move(.forward)
+    try pug.move(.left)
+    try pug.move(.forward)
+    try pug.move(.right)
+}
+
+func perform(times: Int, movement: () throws -> ()) rethrows {
+    for _ in 1...times {
+        try movement()
+    }
+}
